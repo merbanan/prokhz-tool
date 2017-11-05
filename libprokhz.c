@@ -28,8 +28,8 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include <malloc.h>
 #include <inttypes.h>
 
-#include "libprokhz_internal.h"
 #include "libprokhz.h"
+#include "libprokhz_internal.h"
 
 prokhz_ctx* libprokhz_init(char *serial_tty_name) {
 	int i, probe;

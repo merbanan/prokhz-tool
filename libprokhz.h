@@ -20,10 +20,16 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #ifndef INCLUDE_LIBPROKHZ_H_
 #define INCLUDE_LIBPROKHZ_H_
 
-typedef struct {
+#include <libserialport.h>
+#include <libusb-1.0/libusb.h> 
+
+typedef struct prokhz_ctx prokhz_ctx;
+typedef struct prokhz_ctx {
 	char *name;
-	int (*em4100_read)(uint8_t *hex_buf);
-	int (*em4100_write)(uint8_t *hex_buf);
+	struct libusb_device_handle *devh;
+	struct sr_serial_dev_inst *serial;
+	int (*em4100_read) (prokhz_ctx* ctx, uint8_t *hex_buf);
+	int (*em4100_write)(prokhz_ctx* ctx, uint8_t *hex_buf);
 } prokhz_ctx;
 
 prokhz_ctx* libprokhz_init(char *serial_tty_name);

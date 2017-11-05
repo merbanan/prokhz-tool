@@ -73,7 +73,7 @@ int main(int argc,char** argv)
         ctx = libprokhz_init(serial_device);
         if (ctx)
             fprintf(stdout, "device %s found\n", ctx->name);
-	ctx->em4100_read("123678");
+	ctx->em4100_read(ctx, (uint8_t*)"123678");
 
     }
 exit:

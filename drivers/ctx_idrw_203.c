@@ -28,16 +28,16 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #include <inttypes.h>
 
 #include "../libprokhz_internal.h"
-#include "../libprokhz.h"
+//#include "../libprokhz.h"
 
 
-int ctx_idrw_203_probe() {
+int ctx_idrw_203_probe(prokhz_ctx* ctx) {
            fprintf(stdout, "probing()\n");
 	
 	return 1;
 };
 
-int dummy_read(uint8_t *hex_buf) {
+int dummy_read(prokhz_ctx* ctx, uint8_t *hex_buf) {
         fprintf(stdout, "dummy_read() %s\n", hex_buf);
 	
 	return 1;

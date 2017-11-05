@@ -20,6 +20,8 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 #ifndef INCLUDE_LIBPROKHZ_INTERNAL_H_
 #define INCLUDE_LIBPROKHZ_INTERNAL_H_
 
+#include "libprokhz.h"
+
 #define PROKHZ_DEVICES \
 		DECL(ctx_idrw_203)
 
@@ -27,8 +29,9 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 typedef struct {
 	char name[256];
 	int (*probe)();
-	int (*em4100_read)(uint8_t *hex_buf);
-	int (*em4100_write)(uint8_t *hex_buf);
+	int (*init)(prokhz_ctx* ctx);
+	int (*em4100_read)(prokhz_ctx* ctx, uint8_t *hex_buf);
+	int (*em4100_write)(prokhz_ctx* ctx, uint8_t *hex_buf);
 } hw_device;
 
 
