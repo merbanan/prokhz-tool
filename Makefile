@@ -1,19 +1,48 @@
-CC = gcc
+CC       = gcc
+CFLAGS   = -Wall -Wextra -Wpedantic -std=c99 -O2 -I. -D_DEFAULT_SOURCE
+LDFLAGS  = -lusb-1.0
 
+GTK_CFLAGS  = $(shell pkg-config --cflags gtk4)
+GTK_LDFLAGS = $(shell pkg-config --libs gtk4)
 
-all: libprokhz prokhz-tool
+LIB_SRC = prokhz_common.c \
+          dev_rfid_app.c  \
+          dev_p1d.c       \
+          dev_ctx203.c    \
+          dev_idrw.c
 
+LIB_OBJ = $(LIB_SRC:.c=.o)
+LIB     = libprokhz.a
 
-libprokhz:
-	$(CC) -Wall -Og -g3 -c drivers/ctx_idrw_203.c -o drivers/ctx_idrw_203.o -I/usr/local/include -L. -lnsl -lm -lc -L/usr/local/lib -lusb-1.0
-	$(CC) -Wall -Og -g3 -c libprokhz.c -o libprokhz.o -I/usr/local/include -L. -lnsl -lm -lc -L/usr/local/lib -lusb-1.0
-	ar rcs libprokhz.a libprokhz.o drivers/*.o
+ALL_HEADERS = prokhz.h prokhz_device.h
 
-prokhz-tool:
-	$(CC) -Wall -Og -g3 -static prokhz-tool.c -L. -lprokhz -o prokhz-tool
+.PHONY: all clean install
+
+all: prokhz_tool prokhz_gui
+
+$(LIB): $(LIB_OBJ)
+	ar rcs $@ $^
+
+prokhz_tool: prokhz_tool.o $(LIB)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+prokhz_gui: prokhz_gui.o $(LIB)
+	$(CC) $(CFLAGS) $(GTK_CFLAGS) -o $@ $^ $(LDFLAGS) $(GTK_LDFLAGS)
+
+# Library and tool objects share the same flags
+$(LIB_OBJ) prokhz_tool.o: %.o: %.c $(ALL_HEADERS)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# GUI object: GTK CFLAGS, -Wpedantic suppressed (GTK4 headers trigger it)
+prokhz_gui.o: prokhz_gui.c $(ALL_HEADERS)
+	$(CC) $(CFLAGS) -Wno-pedantic $(GTK_CFLAGS) -c -o $@ $<
+
+install: prokhz_tool prokhz_gui $(LIB)
+	install -Dm755 prokhz_tool  $(DESTDIR)/usr/local/bin/prokhz-tool
+	install -Dm755 prokhz_gui   $(DESTDIR)/usr/local/bin/prokhz-gui
+	install -Dm644 $(LIB)       $(DESTDIR)/usr/local/lib/$(LIB)
+	install -Dm644 prokhz.h     $(DESTDIR)/usr/local/include/prokhz.h
 
 clean:
-	rm -f *.o prokhz-tool drivers/*.o
-
-install:
-	cp 20-rwrfid.rules /etc/udev/rules.d/
+	rm -f $(LIB_OBJ) prokhz_tool.o prokhz_gui.o \
+	      $(LIB) prokhz_tool prokhz_gui
