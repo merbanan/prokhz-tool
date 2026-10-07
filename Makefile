@@ -9,7 +9,8 @@ LIB_SRC = prokhz_common.c \
           dev_rfid_app.c  \
           dev_p1d.c       \
           dev_ctx203.c    \
-          dev_idrw.c
+          dev_idrw.c      \
+          dev_tcc.c
 
 LIB_OBJ = $(LIB_SRC:.c=.o)
 LIB     = libprokhz.a

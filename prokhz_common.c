@@ -45,6 +45,7 @@ const prokhz_device_t *prokhz_device_find(const char *name)
 
 extern const prokhz_device_t prokhz_device_ctx203;
 extern const prokhz_device_t prokhz_device_idrw;
+extern const prokhz_device_t prokhz_device_tcc;
 extern const prokhz_device_t prokhz_device_rfid_app;
 extern const prokhz_device_t prokhz_device_p1d;
 
@@ -52,6 +53,7 @@ void prokhz_device_register_all(void)
 {
     prokhz_device_register(&prokhz_device_ctx203);
     prokhz_device_register(&prokhz_device_idrw);
+    prokhz_device_register(&prokhz_device_tcc);
     prokhz_device_register(&prokhz_device_rfid_app);
     prokhz_device_register(&prokhz_device_p1d);
 }
